@@ -3,11 +3,12 @@ from config import config
 
 
 def create_tables():
-    """ Creates PostgreSQL tables of trade executions and historical candles"""
+    """ Creates PostgreSQL tables of trade executions
+        and historical candles"""
     commands = (
         """
         CREATE TABLE IF NOT EXISTS trade_executions (
-            id SERIAL PRIMARY KEY,
+            id BIGSERIAL PRIMARY KEY,
             time TIMESTAMPTZ NOT NULL,
             trade_id INTEGER UNIQUE NOT NULL,
             pair TEXT NOT NULL,
@@ -19,8 +20,8 @@ def create_tables():
         """,        
         """
         CREATE TABLE IF NOT EXISTS candles (
-            id SERIAL PRIMARY KEY,
-            time TIMESTAMPTZ NOT NULL,
+            id BIGSERIAL PRIMARY KEY,
+            time TIMESTAMPTZ UNIQUE NOT NULL,
             pair TEXT NOT NULL,
             open NUMERIC NOT NULL,
             high NUMERIC NOT NULL,
