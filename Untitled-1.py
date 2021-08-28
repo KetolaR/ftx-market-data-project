@@ -69,4 +69,15 @@ def connect():
             print('Database connection closed.')
 
 if __name__ == '__main__':
-    connect()
+    # def inserter():
+    #     "Takes in list of dictionaries, iterates thru and inserts into sql table"
+    # import time
+    # import datetime
+    # params =  {
+    #     "market_name": 'BTC-PERP',
+    #     "resolution": 60,
+    #     "start_time": time.time()-240,
+    #     "end_time": time.time(),
+    #     "limit": 5000
+    # }
+    # response = requests.get('https://ftx.com/api/markets/)

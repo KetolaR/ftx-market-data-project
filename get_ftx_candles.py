@@ -61,9 +61,10 @@ class GetFTXCandles(object):
 
     def _path(self, market_name):
         "constructs a valid path given the market name"
-        return f"markets/{market_name}/candles"
+        return f"{market_name}/candles"
 
-    def inserter(self,candles):
-        """take the list of dictionaries, and for each dictionary, iterate thru the
-        values and call the sql insert function"""
-        
+if __name__ == '__main__':
+    x=GetFTXCandles(trade_pair = 'BTC-PERP', candle_resolution = 60, time_length = 240,
+        current_time = time.time())
+    resp = x.getCandles()
+    print(resp)
