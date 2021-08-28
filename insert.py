@@ -1,9 +1,30 @@
 import psycopg2
 from config import config
+import datetime
 
-def insert_trade():
+def insert_trade(tradeset):
     """  insert a new trade into the trade_executions table """
-    sql = """INSERT INTO trade_executions(time,trade_id,pair,price,size,side,liquidation)"""
+    sql = """INSERT INTO trade_executions(time,pair,trade_id,
+            price,size,side,liquidation)
+            VALUES(%s,%s,%s,%s,%s,%s,%s);"""
+
+    pair = tradeset['market']
+    trades = tradeset['data'] # a list of dictionaries
+    params = config()
+    for trade in trades:
+        conn = psycopg2.connect(**params)
+        cur = conn.cursor()
+        try:
+            cur.execute(sql,(trade['time'], pair, trade['id'], trade['price'],\
+                trade['size'], trade['side'], trade['liquidation']))
+            conn.commit()
+            cur.close()
+        except psycopg2.errors.UniqueViolation as error:
+            pass
+        except Exception as error:
+            print(error)
+    conn.close()
+
 def insert_candles(candles, interval = 60, pair = 'BTC-PERP'):
     """ insert a new candle into the candles table,
         given a list of dictionaries in the order: time, pair,

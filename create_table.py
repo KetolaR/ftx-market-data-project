@@ -10,8 +10,8 @@ def create_tables():
         CREATE TABLE IF NOT EXISTS trade_executions (
             id BIGSERIAL PRIMARY KEY,
             time TIMESTAMPTZ NOT NULL,
-            trade_id INTEGER UNIQUE NOT NULL,
             pair TEXT NOT NULL,
+            trade_id INTEGER UNIQUE NOT NULL,
             price NUMERIC NOT NULL,
             size NUMERIC NOT NULL,
             side TEXT NOT NULL,
