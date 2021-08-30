@@ -1,3 +1,4 @@
 *.csv
 database.ini
 get-request-example.py
+__pycache__/*

@@ -2,7 +2,7 @@ import requests
 import json
 import time
 
-class GetFTXCandles(object):
+class FTXCandles(object):
     """Retrieves historical market data in the form of candles from ftx.com."""
 
     _limit = 5000
@@ -11,25 +11,25 @@ class GetFTXCandles(object):
     _month = 60*60*24*365
 
     def __init__(
-        self, trade_pair = 'BTC-PERP', candle_resolution = _minute, time_length = _month,
+        self, trade_pair = 'BTC-PERP', candle_resolution = _minute, history_length = _month,
         current_time = time.time()
         ):
         self.time = current_time
         self.market_name = trade_pair
         self.resolution = candle_resolution
-        self.time_length = time_length
+        self.history_length = history_length
         self._params() # initialize the parameters of the get request
 
     def _params(self):
         self.parameters = {
             "market_name": self.market_name,
             "resolution": self.resolution,
-            "start_time": self.time - self.time_length,
+            "start_time": self.time - self.history_length,
             "end_time": self.time,
             "limit": self._limit
         }
 
-    def getCandles(self):
+    def get_candles(self):
         self.results = []
         while True:
             # get request
@@ -64,7 +64,7 @@ class GetFTXCandles(object):
         return f"{market_name}/candles"
 
 if __name__ == '__main__':
-    x=GetFTXCandles(trade_pair = 'BTC-PERP', candle_resolution = 60, time_length = 240,
+    x=GetFTXCandles(trade_pair = 'BTC-PERP', candle_resolution = 60, history_length = 240,
         current_time = time.time())
     resp = x.getCandles()
     print(resp)

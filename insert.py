@@ -2,11 +2,13 @@ import psycopg2
 from config import config
 import datetime
 
-def insert_trade(tradeset):
+def insert_trade(tradeset, exchange, processed, time_received):
     """  insert a new trade into the trade_executions table """
-    sql = """INSERT INTO trade_executions(time,pair,trade_id,
-            price,size,side,liquidation)
-            VALUES(%s,%s,%s,%s,%s,%s,%s);"""
+    sql = """INSERT INTO trade_executions(time,exchange,pair,trade_id,
+            price,size,side,liquidation,processed,time_received)
+            VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            ON CONFLICT (trade_id, exchange, pair)
+            DO UPDATE SET processed = EXCLUDED.processed;"""
 
     pair = tradeset['market']
     trades = tradeset['data'] # a list of dictionaries
@@ -15,23 +17,27 @@ def insert_trade(tradeset):
         conn = psycopg2.connect(**params)
         cur = conn.cursor()
         try:
-            cur.execute(sql,(trade['time'], pair, trade['id'], trade['price'],\
-                trade['size'], trade['side'], trade['liquidation']))
+            cur.execute(sql,(trade['time'], exchange, pair, trade['id'], trade['price'],\
+                trade['size'], trade['side'], trade['liquidation'], processed,time_received))
             conn.commit()
             cur.close()
         except psycopg2.errors.UniqueViolation as error:
-            pass
+            print(error)
         except Exception as error:
             print(error)
     conn.close()
 
-def insert_candles(candles, interval = 60, pair = 'BTC-PERP'):
+
+def insert_candles(candles, exchange, pair, interval):
     """ insert a new candle into the candles table,
-        given a list of dictionaries in the order: time, pair,
-        open, high, low, close, volume, interval"""
-    sql = """INSERT INTO candles(time,pair,open,
+        given a list of dictionaries in the order: time, exchange,
+        pair, open, high, low, close, volume, interval"""
+    sql = """INSERT INTO candles(time,exchange,pair,open,
              high,low,close,volume,interval)
-             VALUES(%s,%s,%s,%s,%s,%s,%s,%s);"""
+             VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)
+             ON CONFLICT (time,exchange,pair,interval)
+             DO UPDATE SET open = EXCLUDED.open, high = EXCLUDED.high,
+             low = EXCLUDED.low, close = EXCLUDED.close, volume = EXCLUDED.volume;"""
 
     params = config()
     for candle in candles:
@@ -39,12 +45,12 @@ def insert_candles(candles, interval = 60, pair = 'BTC-PERP'):
         cur = conn.cursor()
         try:
             timestamp = datetime.datetime.fromtimestamp(candle['time']/1000)
-            cur.execute(sql,(timestamp,pair,candle['open'],candle['high'],\
+            cur.execute(sql,(timestamp,exchange,pair,candle['open'],candle['high'],\
                 candle['low'],candle['close'],candle['volume'],interval))
             conn.commit()
             cur.close()
         except psycopg2.errors.UniqueViolation as error:
-            pass
+            print(error)
         except Exception as error:
             print(error)
     conn.close()
@@ -52,9 +58,10 @@ def insert_candles(candles, interval = 60, pair = 'BTC-PERP'):
 if __name__ == '__main__':
     import time
     import datetime
-    from get_ftx_candles import GetFTXCandles
+    from ftx_candles import FTXCandles
     
     interval = 60
-    x=GetFTXCandles(trade_pair = 'BTC-PERP', candle_resolution = interval, time_length = 240,
+    x=FTXCandles(trade_pair = 'BTC-PERP', candle_resolution = interval, time_length = 240,
         current_time = time.time())
-    insert_candles(x.getCandles(), interval = 60, pair = 'BTC-PERP')
+    print(x.get_candles())
+    insert_candles(x.get_candles(), interval = 60, pair = 'BTC-PERP')
