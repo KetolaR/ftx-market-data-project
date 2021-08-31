@@ -30,7 +30,7 @@ def compare_candles(interval, current_interval_timestamp, exchange, trade_pair):
         cur.close()
         # Log the deltas
         while candle is not None:
-            print('\nCandle constructed from websocket:')
+            print('\nCandle in database: (constructed from websocket):')
             print('Time:', candle[0], '  Open:', candle[1], '  High:', candle[2])
             print('  Low:', candle[3], '   Close:', candle[4], '  Volume:', candle[5])
             print('\nCandle retrieved from REST API:')

@@ -71,16 +71,20 @@
 # if __name__ == '__main__':
 #     # def inserter():
 #     #     "Takes in list of dictionaries, iterates thru and inserts into sql table"
-#     # import time
-#     # import datetime
-#     # params =  {
-#     #     "market_name": 'BTC-PERP',
-#     #     "resolution": 60,
-#     #     "start_time": time.time()-240,
-#     #     "end_time": time.time(),
-#     #     "limit": 5000
-#     # }
-#     # response = requests.get('https://ftx.com/api/markets/)
+# import time
+# from datetime import datetime
+# import requests
+# import json
+# params =  {
+#     "market_name": 'BTC-PERP',
+#     "resolution": 60,
+#     "start_time": 1630295280.0,
+#     "end_time": 1630295280.0 + (8*60),
+#     "limit": 5000
+# }
+# response = requests.get('https://ftx.com/api/markets/BTC-PERP/candles', params=params).json()
+# print(response['result'])
+
 
 #     #detect the turn of a period
 #     from datetime import datetime
@@ -143,11 +147,11 @@
 
 
 
-import time
-from datetime import datetime
-start_time = time.time() # record the start-time of retrieving trade info
-current_time_interval = start_time - (start_time % 60)
-print(datetime.fromtimestamp)
+# import time
+# from datetime import datetime
+# start_time = time.time() # record the start-time of retrieving trade info
+# current_time_interval = start_time - (start_time % 60)
+# print(datetime.fromtimestamp)
 
 # current_dt = datetime.datetime.fromtimestamp(current_time_interval)
 # print(current_dt)
@@ -180,4 +184,35 @@ print(datetime.fromtimestamp)
 # print(datetime.fromtimestamp(x[1]['time']/1000))
 # print(current_interval_dt)
 
+# from insert import insert_candles
+# import time
+
+# new_candle = [{'time':time.time()*1000, 'open':47913.0, 'high':47913.0,\
+#     'low':47913.0, 'close':47913.0, 'volume':47913.0*0.0225}]
+# insert_candles(candles=new_candle, exchange='FTX', pair='BTC-PERP', interval=60)
+import time
+from datetime import datetime
+def timer():
+    while True:
+        current_time = time.time()
+        # current minute interval:
+        current_interval_timestamp = current_time - ( current_time % 60)
+        # compare candles for this past minute:
+        compare_candles(interval=60,current_interval_timestamp=current_interval_timestamp,exchange=exchange,trade_pair=trade_pair)
+
+        # if the hour also changed:
+        if datetime.fromtimestamp(current_interval_timestamp).hour > datetime.fromtimestamp(current_interval_timestamp-60).hour or\
+            datetime.fromtimestamp(current_interval_timestamp).day > datetime.fromtimestamp(current_interval_timestamp-60).day:
+            # compare candles for this past hour:
+            compare_candles(interval=60*60,current_interval_timestamp=current_interval_timestamp,exchange=exchange,trade_pair=trade_pair)
+
+        # if the day also changed:
+        if datetime.fromtimestamp(current_interval_timestamp).day > datetime.fromtimestamp(current_interval_timestamp-60).day or\
+            datetime.fromtimestamp(current_interval_timestamp).month > datetime.fromtimestamp(current_interval_timestamp-60).month:
+            # compare candles for this past day:
+            compare_candles(interval=60*60*24,current_interval_timestamp=current_interval_timestamp,exchange=exchange,trade_pair=trade_pair)
+            
+        # wait until the next call should happen
+        next_call = current_interval_timestamp + 60
+        time.sleep(next_call - time.time())
 
