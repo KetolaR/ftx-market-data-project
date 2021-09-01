@@ -2,12 +2,13 @@
 * Run "pip install -r requirements.txt" to  install necessary custom packages.
 * Create a PostgreSQL database. The code will create two tables in the database: one for storing trade executions and  one for historical candles.
 * Also create a database.ini file of the following format or add this section to an existing database.ini file in the folder:
-
-> [roope_postgresql]
-> host=localhost
-> database=markets
-> user=postgres
-> password=password
+```
+[roope_postgresql]
+host=localhost
+database=markets
+user=postgres
+password=password
+```
 
 # Functionality
 The program creates two PostgreSQL tables in a pre-existing database, one for storing trade executions received from FTX's websocket API, and one for storing historical trades from FTX's REST API. Both tables assume multiple exchanges and trade pairs. 
