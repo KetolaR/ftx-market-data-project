@@ -5,6 +5,7 @@
 #######################################
 
 # import necessary modules
+from ftx_open_interest import ftx_open_interest
 from update_candle import update_candle
 from create_table import create_tables
 from ftx_candles import FTXCandles
@@ -47,6 +48,9 @@ def timer():
             print('The day changed. Comparing candles...')
             compare_candles(interval=60*60*24,current_interval_timestamp=current_interval_timestamp,exchange=exchange,trade_pair=trade_pair)
             
+        # report open interest at turn of period
+        ftx_open_interest(pair=trade_pair)
+        
         # wait until the next call should happen
         next_call = current_interval_timestamp + 60
         time.sleep(next_call - time.time())

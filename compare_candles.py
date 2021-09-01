@@ -5,7 +5,9 @@ from ftx_candles import FTXCandles
 from config import config
 
 def compare_candles(interval, current_interval_timestamp, exchange, trade_pair):
+    # allow some time for trades to be logged in database
     time.sleep(10) 
+
     completed_interval_timestamp = current_interval_timestamp - interval # the previous, now complete, interval
     dt1 = datetime.fromtimestamp(completed_interval_timestamp - 5) # for fetching time from sql table
     dt2 = datetime.fromtimestamp(completed_interval_timestamp + 5)

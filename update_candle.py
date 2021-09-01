@@ -1,5 +1,3 @@
-from candle_updater import candle_updater
-import time
 from datetime import datetime
 import psycopg2
 from config import config
