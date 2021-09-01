@@ -33,4 +33,3 @@ FTX has a caching mechanism, which occasionally causes a significant delay in th
 
 Sometimes, websocket trades are received long after the trade happens, causing delays in updating the most recent candle (the last trades are received up to 10 seconds after the candle has ended).
 * This is either an issue with FTX's websocket, or a problem with internet connection.
-
