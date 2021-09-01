@@ -1,4 +1,5 @@
-# Requirements:
+## Requirements:
+* Run main.py to run the program, but first:
 * Run "pip install -r requirements.txt" to  install necessary custom packages.
 * Create a PostgreSQL database. The code will create two tables in the database: one for storing trade executions and  one for historical candles.
 * Also create a database.ini file of the following format or add this section to an existing database.ini file in the folder:
@@ -10,7 +11,7 @@ user=postgres
 password=password
 ```
 
-# Functionality
+## Functionality
 The program creates two PostgreSQL tables in a pre-existing database, one for storing trade executions received from FTX's websocket API, and one for storing historical trades from FTX's REST API. Both tables assume multiple exchanges and trade pairs. 
 *Note: The trade pair can be changed by editing the necessary variable. However, the endpoints and url paths are currently only configured to work for the FTX exchange.*
 
@@ -21,7 +22,7 @@ The program uses threading to run three processes concurrently:
 
 Once those three threads have been started, the program fetches 50 candles of historical market data for three intervals, 1 minute, 1 hour, and 1 day, and inserts these candles into the 'candles' table. This number and these intervals can be changed by editing the necessary variables.
 
-# Known Issues
+## Known Issues
 The first candle, (constructed from a partial REST API candle and updated with trades), often has an incorrect volume, and can have an incorrect high and low. This is because the REST API candle is fetched concurrently with the collection of trades, so when the REST API candle arrives before trades start updating, the size of some trades do not get counted in the volume.
 * Possible solutions:
     * Ignore first period, and only start updating candles at the turn of the first period after the program is started.
