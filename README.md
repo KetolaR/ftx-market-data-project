@@ -6,7 +6,7 @@
 ```
 [roope_postgresql]
 host=localhost
-database=markets
+database=database_name
 user=postgres
 password=password
 ```
