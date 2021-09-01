@@ -22,7 +22,7 @@ The program uses threading to run three processes concurrently:
 Once those three threads have been started, the program fetches 50 candles of historical market data for three intervals, 1 minute, 1 hour, and 1 day, and inserts these candles into the 'candles' table. This number and these intervals can be changed by editing the necessary variables.
 
 # Known Issues
-The first candle, (constructed from a partial REST API candle and updated with trades), has an incorrect volume, and can have an incorrect high and low. This is because the REST API candle is fetched concurrently with the collection of trades, so when the REST API candle arrives before trades start updating, the size of some trades do not get counted in the volume. If the REST API candle arrives after websocket trades start updating, some trades get double-counted.
+The first candle, (constructed from a partial REST API candle and updated with trades), often has an incorrect volume, and can have an incorrect high and low. This is because the REST API candle is fetched concurrently with the collection of trades, so when the REST API candle arrives before trades start updating, the size of some trades do not get counted in the volume.
 * Possible solutions:
     * Ignore first period, and only start updating candles at the turn of the first period after the program is started.
     * Implement a functionality to synchronize the retrieval of the REST API candle with the start of the websocket subscription
