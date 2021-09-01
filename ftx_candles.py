@@ -64,7 +64,7 @@ class FTXCandles(object):
         return f"{market_name}/candles"
 
 if __name__ == '__main__':
-    x=GetFTXCandles(trade_pair = 'BTC-PERP', candle_resolution = 60, history_length = 240,
+    x=FTXCandles(trade_pair = 'BTC-PERP', candle_resolution = 60, history_length = 240,
         current_time = time.time())
     resp = x.getCandles()
     print(resp)

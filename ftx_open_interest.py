@@ -12,7 +12,7 @@ def ftx_open_interest(pair):
     response = response['result']
     open_interest_usd = response['openInterestUsd']
     open_interest = response['openInterest']
-    print('Currently, Open Interest (in number of contracts):\n', open_interest)
+    print('Currently, Open Interest (in number of contracts): ', open_interest, '\n')
     # print('Open Interest (in USD):\n', open_interest_usd)
 
 

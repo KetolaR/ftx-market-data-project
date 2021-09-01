@@ -18,9 +18,10 @@ from threading import Thread
 
 
 # necessary variables
-intervals = [60, 60*60, 60*60*24]
-trade_pair = 'BTC-PERP'
+intervals = [60, 60*60, 60*60*24] # candle intervals
+trade_pair = 'BTC-PERP' 
 exchange = 'FTX'
+historical_candles = 50 # how many historical candles to fetch for each interval
 
 # define necessary methods not imported:
     # For continous processes, we need a way to track the current interval/period.
@@ -30,27 +31,26 @@ def timer():
         current_time = time.time()
         # current minute interval:
         current_interval_timestamp = current_time - ( current_time % 60)
+        print('\nThe minute changed.')
+        # report open interest at turn of period
+        ftx_open_interest(pair=trade_pair)
         # compare candles for this past minute:
-        print('The minute changed. Comparing candles...')
         compare_candles(interval=60,current_interval_timestamp=current_interval_timestamp,exchange=exchange,trade_pair=trade_pair)
 
         # if the hour also changed:
         if datetime.fromtimestamp(current_interval_timestamp).hour > datetime.fromtimestamp(current_interval_timestamp-60).hour or\
             datetime.fromtimestamp(current_interval_timestamp).day > datetime.fromtimestamp(current_interval_timestamp-60).day:
             # compare candles for this past hour:
-            print('The hour changed. Comparing candles...')
+            print('The hour changed.')
             compare_candles(interval=60*60,current_interval_timestamp=current_interval_timestamp,exchange=exchange,trade_pair=trade_pair)
 
         # if the day also changed:
         if datetime.fromtimestamp(current_interval_timestamp).day > datetime.fromtimestamp(current_interval_timestamp-60).day or\
             datetime.fromtimestamp(current_interval_timestamp).month > datetime.fromtimestamp(current_interval_timestamp-60).month:
             # compare candles for this past day:
-            print('The day changed. Comparing candles...')
+            print('The day changed.')
             compare_candles(interval=60*60*24,current_interval_timestamp=current_interval_timestamp,exchange=exchange,trade_pair=trade_pair)
             
-        # report open interest at turn of period
-        ftx_open_interest(pair=trade_pair)
-        
         # wait until the next call should happen
         next_call = current_interval_timestamp + 60
         time.sleep(next_call - time.time())
@@ -87,14 +87,10 @@ t3.start()
 # Fetch historical data: 1 minute, 1 hour, and 1 day candles from FTX's REST API
 print('Fetching historical data from REST API... \n')
 for interval in intervals:
-    window = interval * 50 # get last 50 candles for each interval
+    window = interval * historical_candles # get last __ candles for each interval
     ftx_candles = FTXCandles(trade_pair = trade_pair, candle_resolution = interval,
                             history_length=window, current_time = start_time)
 
     # Save historical data to SQL tables
     insert_candles(ftx_candles.get_candles(), exchange = exchange, interval = interval, pair = trade_pair)
 
-
-
-
-# Record open interest at close of each interval

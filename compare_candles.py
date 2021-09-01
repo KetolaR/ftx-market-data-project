@@ -5,6 +5,9 @@ from ftx_candles import FTXCandles
 from config import config
 
 def compare_candles(interval, current_interval_timestamp, exchange, trade_pair):
+    
+    print('The time is now', datetime.fromtimestamp(current_interval_timestamp),'... Comparing candles...')
+
     # allow some time for trades to be logged in database
     time.sleep(10) 
 
@@ -36,7 +39,7 @@ def compare_candles(interval, current_interval_timestamp, exchange, trade_pair):
             print('Time:', candle[0], '  Open:', candle[1], '  High:', candle[2])
             print('  Low:', candle[3], '   Close:', candle[4], '  Volume:', candle[5])
             print('\nCandle retrieved from REST API:')
-            print('Time:', candle[0], '  Open:', fresh_candles[0]['open'], '  High:', fresh_candles[0]['high'] )
+            print('Time:', fresh_candles[0]['startTime'], '  Open:', fresh_candles[0]['open'], '  High:', fresh_candles[0]['high'] )
             print('  Low:', fresh_candles[0]['low'], '   Close:', fresh_candles[0]['close'], '  Volume:', fresh_candles[0]['volume'])
             print('\nThe deltas:')
             print('Open:', float(candle[1])-fresh_candles[0]['open'], '  High:', float(candle[2])-fresh_candles[0]['high'])
